@@ -52,19 +52,25 @@ export default function Detail({ dataItem, nominals, payments }: DetailProps) {
 }
 
 export async function getStaticPaths() {
-  const data = await getFeaturedGame();
-  const games = Array.isArray(data) ? data : []; // safety check
+  try {
+    const data = await getFeaturedGame();
+    const games = Array.isArray(data) ? data : [];
 
-  const paths = games.map((item: GameItemTypes) => ({
-    params: {
-      id: item._id,
-    },
-  }));
+    const paths = games.map((item: GameItemTypes) => ({
+      params: { id: item._id },
+    }));
 
-  return {
-    paths,
-    fallback: false,
-  };
+    return {
+      paths,
+      fallback: false,
+    };
+  } catch (err: any) {
+    console.error("Error in getStaticPaths:", err?.message || "Unknown error");
+    return {
+      paths: [],
+      fallback: false,
+    };
+  }
 }
 
 interface GetStaticProps {
@@ -74,14 +80,26 @@ interface GetStaticProps {
 }
 
 export async function getStaticProps({ params }: GetStaticProps) {
-  const { id } = params;
-  const data = await getDetailVoucher(id);
+  try {
+    const { id } = params;
+    const data = await getDetailVoucher(id);
 
-  return {
-    props: {
-      dataItem: data.detail,
-      nominals: data.detail.nominals,
-      payments: data.payment,
-    },
-  };
+    return {
+      props: {
+        dataItem: data.detail,
+        nominals: data.detail.nominals,
+        payments: data.payment,
+      },
+    };
+  } catch (err: any) {
+    const errorMessage =
+      err?.response?.data?.message ||
+      err?.message ||
+      "Unknown error in getStaticProps";
+    console.error("Error in getStaticProps:", errorMessage);
+
+    return {
+      notFound: true,
+    };
+  }
 }
