@@ -53,11 +53,14 @@ export default function Detail({ dataItem, nominals, payments }: DetailProps) {
 
 export async function getStaticPaths() {
   const data = await getFeaturedGame();
-  const paths = data.map((item: GameItemTypes) => ({
+  const games = Array.isArray(data) ? data : []; // safety check
+
+  const paths = games.map((item: GameItemTypes) => ({
     params: {
       id: item._id,
     },
   }));
+
   return {
     paths,
     fallback: false,
