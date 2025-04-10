@@ -8,8 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "storybook": "start-storybook -s ./public -p 6006",
-    "build-storybook": "build-storybook",
-    "json-server": "json-server --watch data/db.json --port 4000" 
+    "build-storybook": "build-storybook"
   },
   "dependencies": {
     "@types/js-cookie": "^3.0.2",
